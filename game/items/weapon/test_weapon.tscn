@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0wyukgxijtug"]
+
+[ext_resource type="Script" uid="uid://8jpjomr0dw4l" path="res://game/items/weapon/test_weapon.gd" id="1_x1kau"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4kusu"]
+render_priority = 1
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0.90982777, 0.7227015, 1)
+grow = true
+grow_amount = 0.01
+stencil_mode = 3
+stencil_flags = 1
+stencil_compare = 5
+metadata/_stencil_owned = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x1kau"]
+next_pass = SubResource("StandardMaterial3D_4kusu")
+diffuse_mode = 3
+specular_mode = 1
+ao_light_affect = 0.55
+stencil_mode = 1
+stencil_flags = 2
+stencil_color = Color(0, 0.90982777, 0.7227015, 1)
+
+[sub_resource type="TextMesh" id="TextMesh_4kusu"]
+material = SubResource("StandardMaterial3D_x1kau")
+text = "meow"
+
+[node name="TestWeapon" type="RayCast3D"]
+script = ExtResource("1_x1kau")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("TextMesh_4kusu")

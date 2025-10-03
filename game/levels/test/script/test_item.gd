@@ -2,7 +2,7 @@ extends Area3D
 
 @export var item_name: String = "Test Item"
 
-func _ready() -> void:
+func _ready():
 	body_entered.connect(_on_body_entered)
 	
 func _on_body_entered(body):

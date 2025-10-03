@@ -24,7 +24,7 @@ func _physics_process(delta):
 			attack_timer -= delta
 			
 		for i in get_slide_collision_count():
-			var collision = get_slide_collision(1)
+			var collision = get_slide_collision(0)
 			if collision.get_collider().is_in_group("Player"):
 				attack_player()
 
