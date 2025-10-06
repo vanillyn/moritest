@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyayvc4nrtqla"]
+
+[ext_resource type="Script" uid="uid://b3sj63em56kmk" path="res://src/entity/item/valuables/value_label.gd" id="1_ilu5n"]
+
+[node name="ValueLabel" type="Node3D"]
+script = ExtResource("1_ilu5n")

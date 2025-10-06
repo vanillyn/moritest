@@ -1,0 +1,95 @@
+[gd_scene load_steps=14 format=3 uid="uid://byip5306ttf5p"]
+
+[ext_resource type="Script" uid="uid://coacitotqjuxd" path="res://src/entity/health/health_orb.gd" id="1_umui5"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_n8d2h"]
+radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aui1n"]
+render_priority = 1
+transparency = 1
+shading_mode = 0
+albedo_color = Color(7.6046585e-06, 0.94554454, 0.55751294, 1)
+grow = true
+grow_amount = 0.01
+stencil_mode = 3
+stencil_flags = 1
+stencil_compare = 5
+metadata/_stencil_owned = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vgk8v"]
+next_pass = SubResource("StandardMaterial3D_aui1n")
+transparency = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+stencil_mode = 1
+stencil_flags = 2
+stencil_color = Color(7.6046585e-06, 0.94554454, 0.55751294, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_r525p"]
+material = SubResource("StandardMaterial3D_vgk8v")
+radius = 0.1
+height = 0.2
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6nwcy"]
+emission_shape = 1
+emission_sphere_radius = 0.2
+inherit_velocity_ratio = 0.469
+gravity = Vector3(0, 0, 0)
+scale_min = 0.01
+scale_max = 0.14999999
+color = Color(0.75500685, 0.99999994, 0.77018577, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n8d2h"]
+albedo_color = Color(0.3137255, 1, 0.5568628, 1)
+emission_enabled = true
+emission = Color(0, 0.6745098, 0.5019608, 1)
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_aui1n"]
+material = SubResource("StandardMaterial3D_n8d2h")
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="Curve" id="Curve_vgk8v"]
+_data = [Vector2(0, 1), 0.0, -1.1251451, 0, 0, Vector2(1, 0), -1.1188648, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_r525p"]
+curve = SubResource("Curve_vgk8v")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_n8d2h"]
+inherit_velocity_ratio = 0.469
+scale_min = 0.14999999
+scale_max = 0.14999999
+scale_curve = SubResource("CurveTexture_r525p")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6nwcy"]
+transparency = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_qwhbl"]
+material = SubResource("StandardMaterial3D_6nwcy")
+
+[node name="HealthOrbDrop" type="Area3D"]
+script = ExtResource("1_umui5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_n8d2h")
+disabled = true
+
+[node name="Orb" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_r525p")
+
+[node name="HealthParticles" type="GPUParticles3D" parent="."]
+amount = 20
+lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_6nwcy")
+draw_pass_1 = SubResource("QuadMesh_aui1n")
+
+[node name="TrailParticles" type="GPUParticles3D" parent="."]
+amount = 50
+lifetime = 0.52
+process_material = SubResource("ParticleProcessMaterial_n8d2h")
+draw_pass_1 = SubResource("SphereMesh_qwhbl")

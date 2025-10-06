@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://byrduyj4qeq02"]
+
+[ext_resource type="Script" uid="uid://bcxraooddt4ab" path="res://src/entity/enemy/enemy.gd" id="1_u2xxl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7xaro"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7k104"]
+transparency = 1
+albedo_color = Color(1, 0.33333334, 0.40392157, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4gyqm"]
+material = SubResource("StandardMaterial3D_7k104")
+size = Vector3(1, 2, 1)
+
+[node name="TestEnemy" type="CharacterBody3D" groups=["Enemy"]]
+script = ExtResource("1_u2xxl")
+
+[node name="TestEnemyCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_7xaro")
+
+[node name="Cube" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_4gyqm")

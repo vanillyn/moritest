@@ -1,0 +1,43 @@
+[gd_scene load_steps=10 format=3 uid="uid://njxap5i1s4gm"]
+
+[ext_resource type="Script" uid="uid://bj30fxahu2bbb" path="res://src/entity/player/player.gd" id="1_5f2sf"]
+[ext_resource type="Script" uid="uid://cfin6t71plna4" path="res://src/entity/player/script/hand.gd" id="2_jiejy"]
+[ext_resource type="Script" uid="uid://b1pjhi854dh4w" path="res://src/weapon/knife/knife.gd" id="3_kwmhc"]
+[ext_resource type="PackedScene" uid="uid://v1bhjy3upokd" path="res://src/hud/hud.tscn" id="4_x42xx"]
+[ext_resource type="PackedScene" uid="uid://bp8h13rqdwi43" path="res://src/hud/crosshair/crosshair.tscn" id="5_kwmhc"]
+[ext_resource type="Script" uid="uid://byrtmq637wsh3" path="res://src/entity/player/script/cart_grab.gd" id="5_l271a"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
+albedo_color = Color(0.43137255, 1, 0.5647059, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
+material = SubResource("StandardMaterial3D_4flbx")
+
+[node name="Player" type="CharacterBody3D" groups=["Player"]]
+script = ExtResource("1_5f2sf")
+
+[node name="PlayerCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_sh265")
+
+[node name="Bean" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="Pivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49193835, -0.44360322)
+
+[node name="View" type="Camera3D" parent="Pivot"]
+
+[node name="Hand" type="RayCast3D" parent="Pivot/View"]
+script = ExtResource("2_jiejy")
+
+[node name="Weapon" type="RayCast3D" parent="Pivot/View"]
+script = ExtResource("3_kwmhc")
+
+[node name="Hud" parent="." instance=ExtResource("4_x42xx")]
+
+[node name="Crosshair" parent="." instance=ExtResource("5_kwmhc")]
+
+[node name="Cart" type="Node3D" parent="."]
+script = ExtResource("5_l271a")
