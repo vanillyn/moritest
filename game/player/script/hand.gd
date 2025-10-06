@@ -1,0 +1,129 @@
+extends RayCast3D
+
+@export var beam_range: float = 5.0
+@export var beam_strength: int = 1
+@export var rotation_sensitivity: float = 0.003
+@export var pull_strength: float = 15.0
+@export var min_hold_distance: float = 1.5
+@export var max_hold_distance: float = 8.0
+@export var scroll_speed: float = 0.3
+
+var held_item = null
+var hold_distance: float = 3.0
+var target_hold_distance: float = 3.0
+var weight_ratio: float = 1.0
+var rotating: bool = false
+var accumulated_rotation: Vector2 = Vector2.ZERO
+
+func _ready():
+	self.target_position = Vector3(0, 0, -beam_range)
+	
+func _input(event):
+	if event.is_action_pressed("acg"):
+		try_pickup()
+	elif event.is_action_released("acg"):
+		release_item()
+		
+	if event.is_action_pressed("aci") and held_item:
+		rotating = true
+		accumulated_rotation = Vector2.ZERO
+	elif event.is_action_released("aci"):
+		rotating = false
+		
+	if rotating and event is InputEventMouseMotion:
+		accumulated_rotation += event.relative
+		
+	if held_item:
+		if event.is_action_pressed("acsu"):
+			adjust_distance(-scroll_speed)
+		elif event.is_action_pressed("acsd"):
+			adjust_distance(scroll_speed)
+		
+func _physics_process(delta):
+	if held_item and held_item is RigidBody3D:
+		if held_item.is_in_group("Item"):
+			held_item.remove_from_group("Item")
+			
+		var distance_change_speed = 5.0 * weight_ratio
+		hold_distance = lerp(hold_distance, target_hold_distance, distance_change_speed * delta)
+			
+		var target_pos = global_position + (-global_transform.basis.z * hold_distance)
+		
+		var item_weight = held_item.get_weight()
+		weight_ratio = clamp(float(beam_strength) / float(item_weight), 0.1, 1.0)
+		
+		var actual_target = target_pos
+		if weight_ratio < 1.0:
+			var sag_amount = (1.0 - weight_ratio) * 2.0
+			actual_target.y -= sag_amount
+		
+		var direction = (actual_target - held_item.global_position)
+		var distance = direction.length()
+		
+		if distance > 0.1:
+			direction = direction.normalized()
+			var force_mult = pull_strength * weight_ratio * distance
+			held_item.linear_velocity = direction * force_mult
+		else:
+			held_item.linear_velocity = held_item.linear_velocity.lerp(Vector3.ZERO, 10 * delta)
+		
+		held_item.linear_velocity *= 0.9
+		
+		if rotating and accumulated_rotation.length() > 0:
+			var rotation_mult = weight_ratio
+			var torque = Vector3.ZERO
+			torque.y = -accumulated_rotation.x * rotation_sensitivity * rotation_mult * 50
+			torque.x = -accumulated_rotation.y * rotation_sensitivity * rotation_mult * 50
+			held_item.apply_torque(torque)
+			accumulated_rotation = Vector2.ZERO
+		else:
+			held_item.angular_velocity *= 0.8
+			
+		if weight_ratio < 1.0:
+			var extra_gravity = (1.0 - weight_ratio) * 9.8
+			held_item.apply_central_force(Vector3.DOWN * extra_gravity * held_item.mass)
+			
+func try_pickup():
+	if held_item:
+		return
+		
+	self.force_raycast_update()
+	
+	if self.is_colliding():
+		var target = self.get_collider()
+		
+		if target.has_method("get_weight") and target is RigidBody3D:
+			pickup_item(target)
+				
+func pickup_item(item):
+	held_item = item
+	hold_distance = global_position.distance_to(item.global_position)
+	target_hold_distance = hold_distance
+	
+	var item_weight = item.get_weight()
+	weight_ratio = clamp(float(beam_strength) / float(item_weight), 0.1, 1.0)
+	
+	held_item.gravity_scale = 0.2 * (1.0 - weight_ratio)
+	held_item.linear_damp = 2.0
+	held_item.angular_damp = 2.0
+	
+func adjust_distance(amount):
+	if held_item:
+		var adjusted_amount = amount * weight_ratio
+		target_hold_distance = clamp(target_hold_distance + adjusted_amount, min_hold_distance, max_hold_distance)
+		
+func release_item():
+	if held_item:
+		if not held_item.is_in_group("Item"):
+			held_item.add_to_group("Item")
+	
+		held_item.gravity_scale = 1.0
+		held_item.linear_damp = 0.1
+		held_item.angular_damp = 0.1
+			
+		held_item = null
+		weight_ratio = 1.0
+		rotating = false
+
+func is_rotating() -> bool:
+	return rotating

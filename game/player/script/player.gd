@@ -15,6 +15,7 @@ var inv: Array = []
 var health_drain_time: float = 0.0
 
 @onready var view: Camera3D = $Pivot/View
+@onready var pickup_beam: RayCast3D = $Pivot/View/Hand
 @export var mouse_sens: float = 0.002
 
 func _ready():
@@ -22,15 +23,16 @@ func _ready():
 
 func _input(event):
 	if event is InputEventMouseMotion:
+		if pickup_beam and pickup_beam.is_rotating():
+			return
+			
 		rotate_y(-event.relative.x * mouse_sens)
 		view.rotate_x(-event.relative.y * mouse_sens)
 		view.rotation.x = clamp(view.rotation.x, -PI/2, PI/2)
 
-func _physics_process(delta):
-	var loss = damage_rate
-	
+func _physics_process(delta):	
 	if health_drain_time > 0:
-		loss += attacked_rate
+		damage_rate += attacked_rate
 		health_drain_time -= delta
 
 	if health <= 0:

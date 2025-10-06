@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bspfjbi2t23a5"]
+
+[ext_resource type="Script" uid="uid://bcgh5jnsly6fo" path="res://game/items/script/item.gd" id="1_ixgoh"]
+[ext_resource type="ArrayMesh" uid="uid://m6dlpcum3mh5" path="res://game/items/test-jar.obj" id="1_llum4"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ixgoh"]
+height = 1.0
+
+[node name="TestJar" type="RigidBody3D"]
+script = ExtResource("1_ixgoh")
+item_name = "Jar"
+value = 2000
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5174811, 0)
+shape = SubResource("CylinderShape3D_ixgoh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.4963119, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = ExtResource("1_llum4")
