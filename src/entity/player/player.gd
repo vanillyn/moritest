@@ -13,8 +13,7 @@ class_name Player
 @export var beam_range: float = 5.0
 
 @export_group("Combat")
-@export var damage_rate: float = 2.0
-@export var damage_over_time_duration: float = 3.0
+@export var constant_drain_rate: float = 1.5
 
 @export_group("Inventory")
 @export var max_inv: int = 3
@@ -26,6 +25,7 @@ var inv: Array = []
 var health_drain_time: float = 0.0
 var current_damage_rate: float = 0.0
 var mouse_sens: float = 0.002
+var time_since_damage: float = 0.0
 
 var is_dashing: bool = false
 var dash_timer: float = 0.0
@@ -57,6 +57,7 @@ func handle_damage_over_time(delta):
 	if health_drain_time > 0:
 		health_drain_time -= delta
 		damage(int(current_damage_rate * delta))
+		time_since_damage = 0.0
 		
 		if health_drain_time <= 0:
 			current_damage_rate = 0.0
@@ -67,11 +68,9 @@ func handle_movement(delta):
 	var input_dir = Input.get_vector("mvl", "mvr", "mvf", "mvb")
 	var move_dir = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	# handle dash cooldown
 	if dash_cooldown_timer > 0:
 		dash_cooldown_timer -= delta
 	
-	# handle dashing
 	if is_dashing:
 		dash_timer -= delta
 		if dash_timer <= 0:
@@ -81,16 +80,13 @@ func handle_movement(delta):
 			velocity.z = dash_direction.z * dash_speed
 			return
 	
-	# check for dash input
 	if Input.is_action_just_pressed("mvdash") and is_on_floor() and move_dir.length() > 0 and dash_cooldown_timer <= 0:
 		start_dash(move_dir)
 		return
 	
-	# handle jump
 	if Input.is_action_just_pressed("mvj") and is_on_floor():
 		velocity.y = jump_velocity
 	
-	# apply movement
 	if move_dir:
 		velocity.x = move_dir.x * walk_speed
 		velocity.z = move_dir.z * walk_speed
@@ -106,8 +102,11 @@ func start_dash(direction: Vector3):
 	
 func damage(amount: int):
 	super.damage(amount)
-	current_damage_rate = damage_rate
-	health_drain_time = damage_over_time_duration
+	if not dead:
+		print(health)
+		current_damage_rate = constant_drain_rate
+		health_drain_time = health_drain_time	
+		time_since_damage = 0.0
 	
 func take(item):
 	if inv.size() < max_inv:
@@ -118,5 +117,6 @@ func on_death():
 	health = max_health
 	health_drain_time = 0.0
 	current_damage_rate = 0.0
+	time_since_damage = 0.0
 	position = Vector3.ZERO
 	dead = false

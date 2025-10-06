@@ -18,7 +18,7 @@ func _ready():
 	add_to_group("Enemy")
 	entity_type = "enemy"
 	
-func setup_entity():
+func new_entity():
 	player = get_tree().get_first_node_in_group("Player")
 	
 func _physics_process(delta):
@@ -30,7 +30,7 @@ func _physics_process(delta):
 	handle_attack(delta)
 	move_and_slide()
 	
-func move_towards_player(delta):
+func move_towards_player(_delta):
 	var direction = (player.global_position - global_position).normalized()
 	velocity.x = direction.x * movement_speed
 	velocity.z = direction.z * movement_speed
@@ -46,7 +46,7 @@ func handle_attack(delta):
 			
 func attempt_attack():
 	if attack_timer <= 0 and player:
-		player.take_damage(damage)
+		player.damage(attack_damage)
 		attack_timer = attack_cooldown
 		
 func on_death():

@@ -27,8 +27,11 @@ func damage(amount: int):
 	health -= amount
 	health_changed.emit(health, max_health)
 	
-	if health <= 0:
+	if health <= 0 and not dead:
 		die()
+		
+func take_damage(amount: int):
+	damage(amount)
 		
 func heal(amount: int):
 	if dead:
@@ -38,8 +41,6 @@ func heal(amount: int):
 	health_changed.emit(health, max_health)
 	
 func die():
-	
-
 	if dead:
 		return
 	

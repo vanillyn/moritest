@@ -15,7 +15,7 @@ script = ExtResource("1_rpimr")
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 6.0
+offset_right = 54.0
 grow_vertical = 2
 show_percentage = false
 

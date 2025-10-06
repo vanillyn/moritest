@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bj30fxahu2bbb" path="res://src/entity/player/player.gd" id="1_5f2sf"]
 [ext_resource type="Script" uid="uid://cfin6t71plna4" path="res://src/entity/player/script/hand.gd" id="2_jiejy"]
-[ext_resource type="Script" uid="uid://b1pjhi854dh4w" path="res://src/weapon/knife/knife.gd" id="3_kwmhc"]
+[ext_resource type="PackedScene" uid="uid://d0wyukgxijtug" path="res://src/weapon/test/test_weapon.tscn" id="3_kwmhc"]
 [ext_resource type="PackedScene" uid="uid://v1bhjy3upokd" path="res://src/hud/hud.tscn" id="4_x42xx"]
 [ext_resource type="PackedScene" uid="uid://bp8h13rqdwi43" path="res://src/hud/crosshair/crosshair.tscn" id="5_kwmhc"]
 [ext_resource type="Script" uid="uid://byrtmq637wsh3" path="res://src/entity/player/script/cart_grab.gd" id="5_l271a"]
@@ -32,8 +32,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49193835, -0.44360322)
 [node name="Hand" type="RayCast3D" parent="Pivot/View"]
 script = ExtResource("2_jiejy")
 
-[node name="Weapon" type="RayCast3D" parent="Pivot/View"]
-script = ExtResource("3_kwmhc")
+[node name="TestWeapon" parent="Pivot/View" instance=ExtResource("3_kwmhc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.33207095)
 
 [node name="Hud" parent="." instance=ExtResource("4_x42xx")]
 

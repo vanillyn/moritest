@@ -6,9 +6,11 @@ extends Node3D
 var items_stored: Array = []
 var total_value: int = 0
 var detection_area: Area3D
+var player = null
 
 func _ready():
 	add_to_group("Cart")
+	player = get_tree().get_first_node_in_group("Player")
 	setup_detection_area()
 	
 func setup_detection_area():
@@ -30,9 +32,13 @@ func _on_body_entered(body):
 			add_item(body)
 		
 func add_item(item):
-	if item.has_method("get_value"):
+	if item.has_method("get_value") and player:
 		items_stored.append(item)
 		total_value += item.get_value()
+		
+		# add to player inventory instead of just printing
+		player.take(item.get_item_name())
+		
 		print("added " + item.get_item_name() + " to cart. total value: " + str(total_value))
 		item.queue_free()
 		
