@@ -54,7 +54,7 @@ func _update(delta):
 		if i < player.inv.size():
 			if item_mesh[i] == null:
 				var mesh = MeshInstance3D.new()
-				mesh.mesh = SphereMesh.new()
+				mesh.mesh = BoxMesh.new()
 				viewport.add_child(mesh)
 				item_mesh[i] = mesh
 			if item_mesh[i]:

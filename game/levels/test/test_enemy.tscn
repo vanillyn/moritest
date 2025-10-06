@@ -13,7 +13,7 @@ albedo_color = Color(1, 0.33333334, 0.40392157, 1)
 material = SubResource("StandardMaterial3D_7k104")
 size = Vector3(1, 2, 1)
 
-[node name="TestEnemy" type="CharacterBody3D"]
+[node name="TestEnemy" type="CharacterBody3D" groups=["Enemy"]]
 script = ExtResource("1_7k104")
 
 [node name="TestEnemyCollision" type="CollisionShape3D" parent="."]

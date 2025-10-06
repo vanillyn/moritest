@@ -78,6 +78,18 @@ shape = SubResource("BoxShape3D_1c2mv")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BigPillar"]
 mesh = SubResource("BoxMesh_f7g2b")
 
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="BigPillar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.241962, 18.086826)
+mesh = SubResource("BoxMesh_f7g2b")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="BigPillar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5700674, -7.190567, 18.086826)
+mesh = SubResource("BoxMesh_f7g2b")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="BigPillar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.7281833, 14.136578)
+mesh = SubResource("BoxMesh_f7g2b")
+
 [node name="FallenPillar" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.454317, -0.8908401, 0, 0.8908401, 0.454317, -8.229503, 2.3774781, -0.5518975)
 

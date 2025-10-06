@@ -9,7 +9,7 @@ extends CharacterBody3D
 
 var g: float = 9.8
 var max_health: int = 100
-var health: int = max_health
+var health: int = 100
 var max_inv: int = 3
 var inv: Array = []
 var health_drain_time: float = 0.0
@@ -65,6 +65,7 @@ func heal(amount):
 	
 func take(item):
 	inv.append(item)
+	print(inv)
 	
 func die():
 	health = max_health

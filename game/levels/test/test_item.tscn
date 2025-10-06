@@ -14,7 +14,7 @@ metallic_specular = 0.46
 material = SubResource("StandardMaterial3D_0l3m6")
 size = Vector3(1, 0.8, 2)
 
-[node name="TestItem" type="Area3D"]
+[node name="TestItem" type="Area3D" groups=["Destructable"]]
 script = ExtResource("1_0l3m6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

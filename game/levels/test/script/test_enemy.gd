@@ -8,6 +8,7 @@ extends CharacterBody3D
 var health_orb: PackedScene = preload("res://game/items/health_orb_drop.tscn")
 var player = null
 var attack_timer: float = 0.0
+var g = 9.8
 
 func _ready():
 	player = get_tree().get_first_node_in_group("Player")
@@ -17,6 +18,9 @@ func _physics_process(delta):
 		var direction = (player.global_position - global_position).normalized()
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
+		
+		if not is_on_floor():
+			velocity.y -= g * delta
 		
 		move_and_slide()
 		
