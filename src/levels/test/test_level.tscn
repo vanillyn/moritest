@@ -1,6 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://lpaeropc7lfo"]
+[gd_scene load_steps=18 format=3 uid="uid://lpaeropc7lfo"]
 
 [ext_resource type="PackedScene" uid="uid://byrduyj4qeq02" path="res://src/levels/test/test_enemy.tscn" id="2_aqj1o"]
+[ext_resource type="PackedScene" uid="uid://d0wyukgxijtug" path="res://src/weapon/test/test_weapon.tscn" id="2_ytfmf"]
 [ext_resource type="PackedScene" uid="uid://njxap5i1s4gm" path="res://src/entity/player/player.tscn" id="3_ge3fe"]
 [ext_resource type="PackedScene" uid="uid://bspfjbi2t23a5" path="res://src/entity/item/valuables/test/test_jar.tscn" id="3_hcxp5"]
 
@@ -200,6 +201,7 @@ mesh = SubResource("BoxMesh_f7g2b")
 
 [node name="TestEnemy" parent="." instance=ExtResource("2_aqj1o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0562563, 2.0500002, 0.75341797)
+weapon_scene = ExtResource("2_ytfmf")
 
 [node name="TestEnemy2" parent="." instance=ExtResource("2_aqj1o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38277912, 2.0500002, 3.1508303)

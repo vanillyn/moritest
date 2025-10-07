@@ -33,6 +33,9 @@ func try_to_pick_up_cart():
 		var distance = player.global_position.distance_to(cart_instance.global_position)
 		
 		if distance <= pickup_range:
+			if cart_instance.has_method("transfer_to_player"):
+				cart_instance.transfer_to_player()
 			cart_instance.queue_free()
 			cart_instance = null
-			
+		else:
+			print("cart too far away meow")
