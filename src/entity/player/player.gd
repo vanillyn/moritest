@@ -13,7 +13,8 @@ class_name Player
 @export var beam_range: float = 5.0
 
 @export_group("Combat")
-@export var constant_drain_rate: float = 1.5
+@export var health_drain_per_second: float = 2.0
+@export var damage_drain_duration: float = 3.0
 
 @export_group("Inventory")
 @export var max_inv: int = 3
@@ -22,15 +23,15 @@ class_name Player
 @onready var collision_shape: CollisionShape3D = $PlayerCollision
 
 var inv: Array = []
-var health_drain_time: float = 0.0
-var current_damage_rate: float = 0.0
 var mouse_sens: float = 0.002
-var time_since_damage: float = 0.0
 
 var is_dashing: bool = false
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var dash_direction: Vector3 = Vector3.ZERO
+
+var damage_drain_timer: float = 0.0
+var damage_accumulator: float = 0.0
 
 func _ready():
 	super._ready()
@@ -41,7 +42,7 @@ func _ready():
 func _input(event):
 	if event is InputEventMouseMotion:
 		var hand = $Pivot/View/Hand
-		if hand and hand.is_rotating():
+		if hand and hand.has_method("is_rotating") and hand.is_rotating():
 			return
 			
 		rotate_y(-event.relative.x * mouse_sens)
@@ -49,18 +50,22 @@ func _input(event):
 		view.rotation.x = clamp(view.rotation.x, -PI/2, PI/2)
 
 func _physics_process(delta):
-	handle_damage_over_time(delta)
+	handle_constant_drain(delta)
+	handle_damage_drain(delta)
 	handle_movement(delta)
 	move_and_slide()
 	
-func handle_damage_over_time(delta):
-	if health_drain_time > 0:
-		health_drain_time -= delta
-		damage(int(current_damage_rate * delta))
-		time_since_damage = 0.0
-		
-		if health_drain_time <= 0:
-			current_damage_rate = 0.0
+func handle_constant_drain(delta):
+	damage_accumulator += health_drain_per_second * delta
+	
+	if damage_accumulator >= 1.0:
+		var damage_to_deal = int(damage_accumulator)
+		damage(damage_to_deal)
+		damage_accumulator -= damage_to_deal
+	
+func handle_damage_drain(delta):
+	if damage_drain_timer > 0:
+		damage_drain_timer -= delta
 	
 func handle_movement(delta):
 	apply_gravity(delta)
@@ -102,21 +107,28 @@ func start_dash(direction: Vector3):
 	
 func damage(amount: int):
 	super.damage(amount)
-	if not dead:
-		print(health)
-		current_damage_rate = constant_drain_rate
-		health_drain_time = health_drain_time	
-		time_since_damage = 0.0
+	if not dead and amount > 0:
+		damage_drain_timer = damage_drain_duration
 	
 func take(item):
 	if inv.size() < max_inv:
 		inv.append(item)
-		print("picked up: " + str(item))
 		
 func on_death():
 	health = max_health
-	health_drain_time = 0.0
-	current_damage_rate = 0.0
-	time_since_damage = 0.0
-	position = Vector3.ZERO
+	damage_drain_timer = 0.0
+	damage_accumulator = 0.0
+	position = Vector3(3, 3, 3)
 	dead = false
+
+func get_inventory() -> Array:
+	return inv
+
+func get_inventory_size() -> int:
+	return inv.size()
+
+func get_max_inventory() -> int:
+	return max_inv
+
+func is_inventory_full() -> bool:
+	return inv.size() >= max_inv

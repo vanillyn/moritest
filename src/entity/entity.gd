@@ -11,7 +11,8 @@ signal died
 
 var health: int = 100
 var dead: bool = false
-var g: float = 9.8
+
+const GRAVITY: float = 9.8
 
 func _ready():
 	health = max_health
@@ -24,10 +25,10 @@ func damage(amount: int):
 	if dead: 
 		return
 	
-	health -= amount
+	health = max(0, health - amount)
 	health_changed.emit(health, max_health)
 	
-	if health <= 0 and not dead:
+	if health <= 0:
 		die()
 		
 func take_damage(amount: int):
@@ -46,11 +47,23 @@ func die():
 	
 	dead = true
 	died.emit()
-	_on_death()
+	on_death()
 
-func _on_death():
+func on_death():
 	queue_free()
 
 func apply_gravity(delta: float):
 	if not is_on_floor():
-		velocity.y -= g * delta
+		velocity.y -= GRAVITY * delta
+
+func get_health() -> int:
+	return health
+
+func get_max_health() -> int:
+	return max_health
+
+func is_dead() -> bool:
+	return dead
+
+func get_health_percent() -> float:
+	return float(health) / float(max_health)

@@ -1,6 +1,10 @@
 extends Node3D
 class_name Weapon
 
+signal weapon_fired
+signal weapon_reloaded
+signal ammo_changed(current, max)
+
 @export_group("Weapon")
 @export var weapon_name: String = "weapon"
 @export var damage: int = 25
@@ -8,6 +12,7 @@ class_name Weapon
 @export var weapon_range: float = 100.0
 @export var ammo_capacity: int = -1
 @export var reload_time: float = 1.0
+@export var auto_reload: bool = false
 
 @export_group("Visual")
 @export var beam_duration: float = 0.05
@@ -54,16 +59,20 @@ func _input(event):
 		
 func attempt_fire():
 	if ammo_capacity > 0 and current_ammo <= 0:
+		if auto_reload and can_reload():
+			start_reload()
 		return
 		
 	fire()
 	
 	if ammo_capacity > 0:
 		current_ammo -= 1
+		ammo_changed.emit(current_ammo, ammo_capacity)
 	
 func fire():
 	can_fire = false
 	fire_timer = fire_rate
+	weapon_fired.emit()
 	on_fire()
 	
 func on_fire():
@@ -81,6 +90,8 @@ func finish_reload():
 	is_reloading = false
 	current_ammo = ammo_capacity
 	can_fire = true
+	weapon_reloaded.emit()
+	ammo_changed.emit(current_ammo, ammo_capacity)
 	
 func can_reload() -> bool:
 	return ammo_capacity > 0 and current_ammo < ammo_capacity and not is_reloading
@@ -98,3 +109,22 @@ func show_beam(start: Vector3, end: Vector3):
 	beam_line.mesh = mesh
 	beam_line.visible = true
 	beam_timer = beam_duration
+
+func get_ammo() -> int:
+	return current_ammo
+
+func get_max_ammo() -> int:
+	return ammo_capacity
+
+func get_ammo_percent() -> float:
+	if ammo_capacity <= 0:
+		return 1.0
+	return float(current_ammo) / float(ammo_capacity)
+
+func is_ready() -> bool:
+	return can_fire and not is_reloading
+
+func get_reload_progress() -> float:
+	if not is_reloading:
+		return 1.0
+	return 1.0 - (reload_timer / reload_time)
